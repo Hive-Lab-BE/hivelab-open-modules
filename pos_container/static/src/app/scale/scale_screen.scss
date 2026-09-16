@@ -1,0 +1,32 @@
+// Styles pour le numpad de saisie manuelle dans le ScaleScreen
+
+.numpad-scale {
+    // Grille 3 colonnes pour les boutons
+    grid-template-columns: repeat(3, 1fr) !important;
+    gap: 4px;
+
+    .numpad-button {
+        min-width: 50px;
+        min-height: 50px;
+        font-size: 1.25rem !important;
+        font-weight: 500;
+    }
+}
+
+// Layout pour afficher le numpad à côté du formulaire
+.scale-form-with-numpad {
+    position: relative;
+    padding-right: 200px; // Espace pour le numpad
+}
+
+.scale-numpad-container {
+    position: absolute;
+    right: 0;
+    top: 0;
+    bottom: 0;
+    width: 180px;
+    border-left: 1px solid #dee2e6;
+    padding-left: 15px;
+    background: #f8f9fa;
+    border-radius: 0 8px 8px 0;
+}

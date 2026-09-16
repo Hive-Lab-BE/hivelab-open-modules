@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <!-- noupdate="0" pour forcer la mise à jour du pattern corrigé -->
+    <data noupdate="0">
+        <!-- Règle de code-barres pour les contenants (préfixe 049) -->
+        <record id="barcode_rule_container" model="barcode.rule">
+            <field name="name">Contenant</field>
+            <field name="barcode_nomenclature_id" ref="barcodes.default_barcode_nomenclature"/>
+            <field name="type">container</field>
+            <field name="encoding">ean13</field>
+            <!-- Pattern: 049 + 10 points = 13 caractères (EAN-13) -->
+            <field name="pattern">049..........</field>
+            <field name="sequence">45</field>
+        </record>
+    </data>
+</odoo>

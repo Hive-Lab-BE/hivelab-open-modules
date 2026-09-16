@@ -1,0 +1,28 @@
+// Positionnement relatif sur rightpane pour que le badge absolute fonctionne
+.product-screen .rightpane {
+    position: relative;
+}
+
+// Badge contenant en attente
+.pending-container-badge {
+    position: absolute;
+    bottom: 20px;
+    left: 50%;
+    transform: translateX(-50%);
+    z-index: 1050;
+    background-color: #17a2b8;
+    color: white;
+    padding: 12px 24px;
+    font-size: 1.15rem;
+
+    .btn.rounded-circle {
+        width: 32px;
+        height: 32px;
+        font-size: 0.85rem;
+    }
+
+    // En mode tablette, remonter au-dessus de la barre switchpane (Payer / Panier)
+    @media screen and (max-width: 992px) {
+        bottom: 100px;
+    }
+}

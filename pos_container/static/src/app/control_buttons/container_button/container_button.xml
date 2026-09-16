@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<templates id="template" xml:space="preserve">
+    <t t-name="pos_container.ContainerButton">
+        <button t-att-class="props.class || 'btn btn-secondary btn-lg lh-lg'" t-on-click="onClick">
+            <i class="fa fa-cube me-1"/>
+            <span>Contenants</span>
+        </button>
+    </t>
+</templates>

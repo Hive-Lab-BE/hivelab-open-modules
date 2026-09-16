@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<templates id="template" xml:space="preserve">
+
+    <!-- Extend Orderline template to show tare information -->
+    <t t-name="pos_container.OrderlineTareInfo" t-inherit="point_of_sale.Orderline" t-inherit-mode="extension">
+        <!-- Hide the original price-per-unit for weighed products (we display our own NET line) -->
+        <xpath expr="//li[hasclass('price-per-unit')][1]" position="attributes">
+            <attribute name="t-if">vals.displayPriceUnit and !vals.isWeighed</attribute>
+        </xpath>
+
+        <xpath expr="//li[hasclass('price-per-unit')][1]" position="after">
+            <!--
+                Display format:
+                - Simple product (no weighing): standard display
+                - Weighed product without tare: X kg NET x Y / kg
+                - Weighed product with tare: gross line + tare line + NET line
+            -->
+
+            <!-- Gross weight line (only if tare exists) -->
+            <li t-if="vals.hasTare" class="weight-info weight-info-detail text-muted">
+                <t t-esc="vals.grossWeight"/> kg brut
+            </li>
+
+            <!-- Tare line (only if tare exists) -->
+            <li t-if="vals.hasTare" class="weight-info weight-info-detail text-muted">
+                - <t t-esc="vals.tareWeight"/> kg tare
+            </li>
+
+            <!-- NET x unit price line (for all weighed products) -->
+            <li t-if="vals.isWeighed" class="weight-info weight-info-net">
+                <span class="fw-bold"><t t-esc="vals.netWeight"/> kg NET</span> x <t t-esc="vals.unitPriceFormatted"/> / kg<t t-if="vals.hasTare"> (pesée <t t-esc="vals.weighingMode"/>)</t>
+            </li>
+        </xpath>
+    </t>
+
+</templates>

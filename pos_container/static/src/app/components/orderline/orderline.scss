@@ -1,0 +1,71 @@
+// Styles for tare and weight information on orderlines
+
+.orderline {
+    // New weight info display (multi-line format per mockup)
+    .weight-info {
+        font-size: 85%;
+
+        // Detail lines (gross, tare) - gray italic
+        &.weight-info-detail {
+            color: #888;
+            font-style: italic;
+        }
+
+        // NET line - bold, normal color
+        &.weight-info-net {
+            font-style: normal;
+            color: #333;
+        }
+    }
+
+    // Legacy tare-info styles (kept for backward compatibility)
+    .tare-info:not(.weight-info) {
+        font-size: 85%;
+        color: #666;
+
+        .fa-balance-scale {
+            color: #17a2b8;
+        }
+
+        .tare-details {
+            display: inline-block;
+        }
+    }
+
+    .tare-badge {
+        .badge {
+            font-size: 75%;
+            font-weight: normal;
+
+            .fa-balance-scale {
+                font-size: 90%;
+            }
+        }
+    }
+}
+
+// Receipt specific styles
+.pos-receipt {
+    .weight-info {
+        font-size: 75%;
+        margin-top: 1px;
+
+        &.weight-info-detail {
+            color: #666;
+        }
+
+        &.weight-info-net {
+            color: #000;
+        }
+    }
+
+    // Legacy styles
+    .tare-info:not(.weight-info) {
+        font-size: 75%;
+        margin-top: 2px;
+
+        .fa-balance-scale {
+            font-size: 90%;
+        }
+    }
+}

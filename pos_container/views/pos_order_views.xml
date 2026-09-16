@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <!-- Extend POS Order Line tree view to show tare information -->
+    <record id="view_pos_order_line_tree_tare" model="ir.ui.view">
+        <field name="name">pos.order.line.tree.tare</field>
+        <field name="model">pos.order.line</field>
+        <field name="inherit_id" ref="point_of_sale.view_pos_order_line"/>
+        <field name="arch" type="xml">
+            <field name="qty" position="after">
+                <field name="tare_weight" optional="hide"/>
+                <field name="tare_mode" optional="hide"/>
+                <field name="container_id" optional="hide"/>
+            </field>
+        </field>
+    </record>
+
+    <!-- Extend POS Order form view to show tare information in lines -->
+    <record id="view_pos_order_form_tare" model="ir.ui.view">
+        <field name="name">pos.order.form.tare</field>
+        <field name="model">pos.order</field>
+        <field name="inherit_id" ref="point_of_sale.view_pos_pos_form"/>
+        <field name="arch" type="xml">
+            <xpath expr="//field[@name='lines']/list/field[@name='qty']" position="after">
+                <field name="tare_weight" string="Tare (kg)" optional="hide"/>
+                <field name="container_id" string="Contenant" optional="hide"/>
+            </xpath>
+        </field>
+    </record>
+
+</odoo>

@@ -1,0 +1,200 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<templates id="template" xml:space="preserve">
+    <t t-name="pos_container.ContainerAddForm">
+        <!-- Si ouvert via dialog.add(), wrapper dans Dialog avec style card violet -->
+        <t t-if="props.close">
+            <Dialog size="'md'">
+                <t t-set-slot="header">
+                    <t t-if="env.isSmall">
+                        <button class="btn oi oi-arrow-left" data-bs-dismiss="modal" aria-label="Close" t-on-click="cancel"/>
+                    </t>
+                    <h4 class="modal-title text-break text-center w-100" t-att-class="{ 'me-auto': env.isSmall }">
+                        <i class="fa fa-plus-circle me-2"/>Ajouter un contenant
+                    </h4>
+                    <t t-if="!env.isSmall">
+                        <button type="button" class="btn-close" aria-label="Close" tabindex="-1" t-on-click="cancel"/>
+                    </t>
+                </t>
+
+                <!-- Corps : même layout flex-column que ScaleScreen -->
+                <div class="d-flex flex-column">
+                    <!-- Poids actuel -->
+                    <div class="d-flex gap-2 align-items-center mb-2">
+                        <div class="w-50 fs-3 me-2">
+                            <i class="fa fa-balance-scale me-1"/>Poids :
+                        </div>
+                        <div class="fs-3 px-5 text-end form-control-plaintext fw-bold text-primary">
+                            <t t-esc="weightDisplay"/> kg
+                        </div>
+                    </div>
+                    <t t-if="!state.scaleConnected and !state.scaleInitializing">
+                        <div class="text-warning mb-2 text-center">
+                            <i class="fa fa-exclamation-triangle me-1"/>Balance non connectée
+                        </div>
+                    </t>
+
+                    <!-- Nom du contenant -->
+                    <div class="d-flex gap-2 align-items-center mb-2">
+                        <div class="w-50 fs-3 me-2">
+                            <i class="fa fa-tag me-1"/>Nom :
+                        </div>
+                        <input type="text" class="form-control fs-5"
+                            t-att-value="state.name"
+                            t-on-input="(ev) => this.state.name = ev.target.value"
+                            placeholder="Ex: Bocal verre 500ml"/>
+                    </div>
+
+                    <!-- Code-barres EAN13 -->
+                    <div class="d-flex gap-2 align-items-center mb-2">
+                        <div class="w-50 fs-3 me-2">
+                            <i class="fa fa-barcode me-1"/>EAN13 :
+                        </div>
+                        <div class="d-flex flex-column flex-grow-1">
+                            <input type="text"
+                                t-attf-class="form-control fs-5 #{!barcodeValidation.valid ? 'is-invalid' : ''} #{props.initialBarcode ? 'bg-light' : ''}"
+                                t-att-value="state.barcode"
+                                t-on-input="onBarcodeChange"
+                                t-att-readonly="props.initialBarcode"
+                                placeholder="049XXXXXXXXXX"
+                                maxlength="13"/>
+                            <t t-if="!barcodeValidation.valid">
+                                <div class="invalid-feedback d-block small">
+                                    <i class="fa fa-exclamation-triangle me-1"/>
+                                    <t t-esc="barcodeValidation.message"/>
+                                </div>
+                            </t>
+                            <t t-elif="!state.barcode">
+                                <div class="form-text text-muted small">Auto-généré si vide</div>
+                            </t>
+                        </div>
+                    </div>
+
+                    <!-- Valeur consigne -->
+                    <div class="d-flex gap-2 align-items-center mb-2">
+                        <div class="w-50 fs-3 me-2">
+                            <i class="fa fa-euro me-1"/>Consigne :
+                        </div>
+                        <div class="input-group flex-grow-1">
+                            <input type="number" class="form-control fs-5"
+                                t-att-value="state.depositValue"
+                                t-on-input="onDepositChange"
+                                step="0.01" min="0" placeholder="0.00"/>
+                            <span class="input-group-text">€</span>
+                        </div>
+                    </div>
+
+                    <!-- Info astuce -->
+                    <div class="text-muted small text-center mt-2">
+                        <i class="fa fa-magic me-1"/>Retirez le contenant de la balance pour sauvegarder automatiquement.
+                    </div>
+                </div>
+
+                <t t-set-slot="footer">
+                    <button class="btn btn-secondary btn-lg w-100 mx-2" t-on-click="cancel">
+                        <i class="fa fa-arrow-left me-2"/>Retour
+                    </button>
+                    <button class="btn btn-primary btn-lg d-flex align-items-center justify-content-center w-100 mx-2"
+                        t-on-click="saveContainer"
+                        t-att-disabled="!canSave">
+                        Sauvegarder <i class="fa fa-check ms-2"/>
+                    </button>
+                </t>
+            </Dialog>
+        </t>
+        <!-- Sinon, afficher le contenu avec card (usage embarqué) -->
+        <t t-else="">
+            <div class="container-add-form d-flex flex-column align-items-center justify-content-center flex-grow-1 py-2 px-4 bg-100">
+                <div class="card shadow-lg" style="max-width: 500px; width: 100%;">
+                    <div class="card-header bg-white text-center py-3">
+                        <h4 class="mb-0">
+                            <i class="fa fa-plus-circle me-2"/>Ajouter un contenant
+                        </h4>
+                    </div>
+                    <div class="card-body p-4">
+                        <div class="d-flex flex-column">
+                            <!-- Poids actuel -->
+                            <div class="d-flex gap-2 align-items-center mb-2">
+                                <div class="w-50 fs-3 me-2">
+                                    <i class="fa fa-balance-scale me-1"/>Poids :
+                                </div>
+                                <div class="fs-3 px-5 text-end form-control-plaintext fw-bold text-primary">
+                                    <t t-esc="weightDisplay"/> kg
+                                </div>
+                            </div>
+                            <t t-if="!state.scaleConnected and !state.scaleInitializing">
+                                <div class="text-warning mb-2 text-center">
+                                    <i class="fa fa-exclamation-triangle me-1"/>Balance non connectée
+                                </div>
+                            </t>
+
+                            <!-- Nom du contenant -->
+                            <div class="d-flex gap-2 align-items-center mb-2">
+                                <div class="w-50 fs-3 me-2">
+                                    <i class="fa fa-tag me-1"/>Nom :
+                                </div>
+                                <input type="text" class="form-control fs-5"
+                                    t-att-value="state.name"
+                                    t-on-input="(ev) => this.state.name = ev.target.value"
+                                    placeholder="Ex: Bocal verre 500ml"/>
+                            </div>
+
+                            <!-- Code-barres EAN13 -->
+                            <div class="d-flex gap-2 align-items-center mb-2">
+                                <div class="w-50 fs-3 me-2">
+                                    <i class="fa fa-barcode me-1"/>EAN13 :
+                                </div>
+                                <div class="d-flex flex-column flex-grow-1">
+                                    <input type="text"
+                                        t-attf-class="form-control fs-5 #{!barcodeValidation.valid ? 'is-invalid' : ''} #{props.initialBarcode ? 'bg-light' : ''}"
+                                        t-att-value="state.barcode"
+                                        t-on-input="onBarcodeChange"
+                                        t-att-readonly="props.initialBarcode"
+                                        placeholder="049XXXXXXXXXX"
+                                        maxlength="13"/>
+                                    <t t-if="!barcodeValidation.valid">
+                                        <div class="invalid-feedback d-block small">
+                                            <i class="fa fa-exclamation-triangle me-1"/>
+                                            <t t-esc="barcodeValidation.message"/>
+                                        </div>
+                                    </t>
+                                    <t t-elif="!state.barcode">
+                                        <div class="form-text text-muted small">Auto-généré si vide</div>
+                                    </t>
+                                </div>
+                            </div>
+
+                            <!-- Valeur consigne -->
+                            <div class="d-flex gap-2 align-items-center mb-2">
+                                <div class="w-50 fs-3 me-2">
+                                    <i class="fa fa-euro me-1"/>Consigne :
+                                </div>
+                                <div class="input-group flex-grow-1">
+                                    <input type="number" class="form-control fs-5"
+                                        t-att-value="state.depositValue"
+                                        t-on-input="onDepositChange"
+                                        step="0.01" min="0" placeholder="0.00"/>
+                                    <span class="input-group-text">€</span>
+                                </div>
+                            </div>
+
+                            <!-- Info astuce -->
+                            <div class="text-muted small text-center mt-2">
+                                <i class="fa fa-magic me-1"/>Retirez le contenant de la balance pour sauvegarder automatiquement.
+                            </div>
+                        </div>
+                    </div>
+                    <div class="card-footer bg-white d-flex gap-3 p-3">
+                        <button class="btn btn-secondary btn-lg w-100 mx-2" t-on-click="cancel">
+                            <i class="fa fa-arrow-left me-2"/>Retour
+                        </button>
+                        <button class="btn btn-primary btn-lg d-flex align-items-center justify-content-center w-100 mx-2"
+                            t-on-click="saveContainer"
+                            t-att-disabled="!canSave">
+                            Sauvegarder <i class="fa fa-check ms-2"/>
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </t>
+    </t>
+</templates>

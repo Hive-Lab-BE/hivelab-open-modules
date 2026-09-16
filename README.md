@@ -1,2 +1,2 @@
 # hivelab_open_modules
-Odoo modules developed by HiveLab and released to open-source
+This repository contains odoo modules developed by HiveLab SRL and released under the AGPL V3 license.

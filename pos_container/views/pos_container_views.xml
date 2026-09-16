@@ -1,0 +1,111 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <!-- Vue Formulaire -->
+    <record id="view_pos_container_form" model="ir.ui.view">
+        <field name="name">pos.container.form</field>
+        <field name="model">pos.container</field>
+        <field name="arch" type="xml">
+            <form string="Contenant">
+                <sheet>
+                    <!-- Ruban pour contenant chez le client -->
+                    <widget name="web_ribbon" title="Chez le client" bg_color="text-bg-info" invisible="state != 'with_customer'"/>
+
+                    <!-- Titre principal -->
+                    <div class="oe_title">
+                        <label for="name" string="Contenant"/>
+                        <h1>
+                            <field name="name" placeholder="Ex: Bocal 500ml"/>
+                        </h1>
+                        <div class="o_row">
+                            <span class="fw-bold me-2">Code-barres:</span>
+                            <field name="barcode" placeholder="Auto-généré à la sauvegarde"/>
+                            <button name="action_generate_barcode" type="object"
+                                    string="Régénérer" class="btn-secondary"
+                                    invisible="not id"
+                                    title="Régénère un nouveau code-barres EAN13 valide"/>
+                        </div>
+                    </div>
+
+                    <!-- Informations principales -->
+                    <group>
+                        <group string="Poids">
+                            <label for="tare"/>
+                            <div class="o_row">
+                                <field name="tare" class="oe_inline" widget="float" digits="[12, 3]"/>
+                                <span class="ms-1">kg</span>
+                            </div>
+                        </group>
+                        <group string="Consigne et Statut">
+                            <field name="deposit_amount" widget="monetary"/>
+                            <field name="state" widget="radio"/>
+                        </group>
+                    </group>
+
+                    <!-- Traçabilité (pour managers) -->
+                    <group string="Traçabilité" groups="point_of_sale.group_pos_manager">
+                        <group>
+                            <field name="create_date" readonly="1"/>
+                            <field name="create_uid" readonly="1"/>
+                        </group>
+                        <group>
+                            <field name="write_date" readonly="1"/>
+                            <field name="write_uid" readonly="1"/>
+                        </group>
+                    </group>
+                </sheet>
+            </form>
+        </field>
+    </record>
+
+    <!-- Vue Liste -->
+    <record id="view_pos_container_tree" model="ir.ui.view">
+        <field name="name">pos.container.tree</field>
+        <field name="model">pos.container</field>
+        <field name="arch" type="xml">
+            <list string="Contenants">
+                <field name="barcode"/>
+                <field name="name"/>
+                <field name="tare" string="Tare (kg)"/>
+                <field name="deposit_amount" string="Consigne"/>
+                <field name="state" widget="badge"
+                       decoration-success="state == 'in_store'"
+                       decoration-info="state == 'with_customer'"/>
+            </list>
+        </field>
+    </record>
+
+    <!-- Vue Recherche -->
+    <record id="view_pos_container_search" model="ir.ui.view">
+        <field name="name">pos.container.search</field>
+        <field name="model">pos.container</field>
+        <field name="arch" type="xml">
+            <search string="Rechercher un contenant">
+                <field name="name"/>
+                <field name="barcode"/>
+                <filter string="En magasin" name="in_store" domain="[('state', '=', 'in_store')]"/>
+                <filter string="Chez le client" name="with_customer" domain="[('state', '=', 'with_customer')]"/>
+                <separator/>
+                <group>
+                    <filter string="Statut" name="group_state" context="{'group_by': 'state'}"/>
+                </group>
+            </search>
+        </field>
+    </record>
+
+    <!-- Action -->
+    <record id="action_pos_container" model="ir.actions.act_window">
+        <field name="name">Contenants</field>
+        <field name="res_model">pos.container</field>
+        <field name="view_mode">list,form</field>
+        <field name="search_view_id" ref="view_pos_container_search"/>
+        <field name="help" type="html">
+            <p class="o_view_nocontent_smiling_face">
+                Créer un nouveau contenant
+            </p>
+            <p>
+                Les contenants sont des récipients réutilisables pour la vente en vrac.
+                Chaque contenant a un code-barres EAN13 commençant par "049".
+            </p>
+        </field>
+    </record>
+</odoo>

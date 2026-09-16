@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<templates id="template" xml:space="preserve">
+    <t t-name="pos_container.ControlButtons" t-inherit="point_of_sale.ControlButtons" t-inherit-mode="extension">
+        <!-- Add ContainerButton as first item in the three-dot menu -->
+        <xpath expr="//t[@t-if='props.showRemainingButtons']/div/NoteButton" position="before">
+            <ContainerButton class="buttonClass"/>
+        </xpath>
+    </t>
+</templates>

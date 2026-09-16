@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data noupdate="1">
+        <!-- Utilisateurs POS: lecture et création uniquement (pas de modification/suppression) -->
+        <record id="rule_pos_container_pos_user" model="ir.rule">
+            <field name="name">POS Container: Utilisateur POS Lecture/Création</field>
+            <field name="model_id" ref="model_pos_container"/>
+            <field name="groups" eval="[(4, ref('point_of_sale.group_pos_user'))]"/>
+            <field name="domain_force">[(1, '=', 1)]</field>
+            <field name="perm_read">1</field>
+            <field name="perm_write">0</field>
+            <field name="perm_create">1</field>
+            <field name="perm_unlink">0</field>
+        </record>
+
+        <!-- Managers POS: accès complet -->
+        <record id="rule_pos_container_pos_manager" model="ir.rule">
+            <field name="name">POS Container: Manager Accès Complet</field>
+            <field name="model_id" ref="model_pos_container"/>
+            <field name="groups" eval="[(4, ref('point_of_sale.group_pos_manager'))]"/>
+            <field name="domain_force">[(1, '=', 1)]</field>
+            <field name="perm_read">1</field>
+            <field name="perm_write">1</field>
+            <field name="perm_create">1</field>
+            <field name="perm_unlink">1</field>
+        </record>
+    </data>
+</odoo>

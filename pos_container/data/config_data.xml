@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <!-- Active les unités de mesure pour tous les utilisateurs -->
+    <record id="base.group_user" model="res.groups">
+        <field name="implied_ids" eval="[(4, ref('uom.group_uom'))]"/>
+    </record>
+
+    <!-- Force 3 décimales pour les quantités produits (conformité métrologique balance) -->
+    <record id="uom.decimal_product_uom" model="decimal.precision">
+        <field name="digits" eval="3"/>
+    </record>
+</odoo>

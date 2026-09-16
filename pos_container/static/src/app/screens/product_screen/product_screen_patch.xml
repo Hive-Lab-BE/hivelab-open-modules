@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<templates id="template" xml:space="preserve">
+
+    <!-- Ajoute un badge pour afficher le contenant en attente -->
+    <t t-inherit="point_of_sale.ProductScreen" t-inherit-mode="extension">
+        <xpath expr="//div[hasclass('rightpane')]" position="inside">
+            <div t-if="pendingContainer?.hasPending"
+                 class="pending-container-badge d-flex align-items-center gap-2 rounded-pill shadow">
+                <i class="fa fa-archive"/>
+                <span>
+                    <t t-esc="pendingContainer.get()?.name"/>
+                    (<t t-esc="pendingContainer.get()?.tareFormatted"/>)
+                </span>
+                <button class="btn btn-sm btn-light ms-2 rounded-circle d-flex align-items-center justify-content-center p-0"
+                        t-on-click="() => pendingContainer.clear()">
+                    <i class="fa fa-times"/>
+                </button>
+            </div>
+        </xpath>
+    </t>
+
+</templates>
