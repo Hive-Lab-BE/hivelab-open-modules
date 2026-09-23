@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<templates id="template" xml:space="preserve">
+
+    <!-- Add Hash Certification icon button to navbar (before CashierName) -->
+    <t t-name="pos_hash_cert.NavbarHashCert" t-inherit="point_of_sale.Navbar" t-inherit-mode="extension">
+        <xpath expr="//CashierName" position="before">
+            <button class="btn btn-light btn-lg lh-lg hash-cert-button"
+                    t-att-class="{
+                        'text-success': certificationStatus.isCertified,
+                        'text-danger': !certificationStatus.isCertified
+                    }"
+                    t-on-click="showHashCertification"
+                    t-att-title="certificationStatus.tooltip">
+                <i class="fa fa-fw fa-balance-scale"/>
+            </button>
+        </xpath>
+    </t>
+
+</templates>

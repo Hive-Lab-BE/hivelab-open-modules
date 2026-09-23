@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <!-- Add Hash Certification fields to POS Config form -->
+    <record id="pos_config_view_form_hash_cert" model="ir.ui.view">
+        <field name="name">pos.config.form.hash.cert</field>
+        <field name="model">pos.config</field>
+        <field name="inherit_id" ref="point_of_sale.pos_config_view_form"/>
+        <field name="arch" type="xml">
+            <!-- Add certification setting after IoT Box setting -->
+            <xpath expr="//setting[.//field[@name='is_posbox']]" position="after">
+                <setting string="Certification LNE" help="Certification métrologique pour balances">
+                    <field name="hash_cert_enabled"/>
+                    <div class="content-group mt16" invisible="not hash_cert_enabled">
+                        <div class="row">
+                            <div class="col-lg-4 o_light_label">
+                                <label string="N° Certificat" for="hash_cert_certificate_number"/>
+                            </div>
+                            <div class="col-lg-8">
+                                <field name="hash_cert_certificate_number" placeholder="LNE-33018-3"/>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-lg-4 o_light_label">
+                                <label string="Éditeur" for="hash_cert_vendor"/>
+                            </div>
+                            <div class="col-lg-8">
+                                <field name="hash_cert_vendor" placeholder="Mayam"/>
+                            </div>
+                        </div>
+                        <div class="row mt-2">
+                            <div class="col-12 text-muted small">
+                                <i class="fa fa-info-circle"/> URL vérification: <code>/pos/module_hash/html</code>
+                            </div>
+                        </div>
+                    </div>
+                </setting>
+            </xpath>
+        </field>
+    </record>
+
+</odoo>

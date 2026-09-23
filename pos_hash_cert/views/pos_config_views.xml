@@ -1,0 +1,74 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <!-- Hash Certification Tree View -->
+    <record id="view_pos_hash_certification_tree" model="ir.ui.view">
+        <field name="name">pos.hash.certification.tree</field>
+        <field name="model">pos.hash.certification</field>
+        <field name="arch" type="xml">
+            <list string="Certifications Hash">
+                <field name="verification_date"/>
+                <field name="name"/>
+                <field name="version"/>
+                <field name="hash_value"/>
+                <field name="status" widget="badge" decoration-success="status == 'verified'" decoration-danger="status == 'mismatch'" decoration-warning="status == 'not_found'"/>
+                <field name="verified_by"/>
+                <field name="pos_config_id" optional="hide"/>
+            </list>
+        </field>
+    </record>
+
+    <!-- Hash Certification Form View -->
+    <record id="view_pos_hash_certification_form" model="ir.ui.view">
+        <field name="name">pos.hash.certification.form</field>
+        <field name="model">pos.hash.certification</field>
+        <field name="arch" type="xml">
+            <form string="Certification Hash">
+                <sheet>
+                    <group>
+                        <group>
+                            <field name="name"/>
+                            <field name="version"/>
+                            <field name="hash_algorithm"/>
+                        </group>
+                        <group>
+                            <field name="verification_date"/>
+                            <field name="verified_by"/>
+                            <field name="status"/>
+                            <field name="pos_config_id"/>
+                        </group>
+                    </group>
+                    <group>
+                        <field name="hash_value"/>
+                    </group>
+                    <group>
+                        <field name="notes"/>
+                    </group>
+                </sheet>
+            </form>
+        </field>
+    </record>
+
+    <!-- Menu Item -->
+    <record id="action_pos_hash_certification" model="ir.actions.act_window">
+        <field name="name">Certifications Hash</field>
+        <field name="res_model">pos.hash.certification</field>
+        <field name="view_mode">list,form</field>
+        <field name="help" type="html">
+            <p class="o_view_nocontent_smiling_face">
+                Aucune certification hash pour le moment
+            </p>
+            <p>
+                Les certifications hash sont créées lorsque vous vérifiez l'intégrité des modules depuis le PdV.
+            </p>
+        </field>
+    </record>
+
+    <menuitem
+        id="menu_pos_hash_certification"
+        name="Certifications Hash"
+        parent="point_of_sale.menu_point_config_product"
+        action="action_pos_hash_certification"
+        sequence="100"/>
+
+</odoo>

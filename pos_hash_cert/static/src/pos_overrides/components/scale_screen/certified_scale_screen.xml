@@ -1,0 +1,132 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<templates id="template" xml:space="preserve">
+    <!-- This is a certified copy of the POS ScaleScreen template with Mayam
+         container/tare extensions merged in. This certified version will only
+         change if absolutely necessary, whilst the base template is free to change.
+
+         DO NOT MODIFY without updating the LNE certification checksum. -->
+    <t t-name="pos_hash_cert.CertifiedScaleScreen">
+        <Dialog size="'md'">
+            <t t-set-slot="header">
+                <t t-if="env.isSmall">
+                    <button class="btn oi oi-arrow-left" data-bs-dismiss="modal" aria-label="Close" t-on-click="props.close"/>
+                </t>
+                <h4 class="modal-title text-break text-center w-100" t-att-class="{ 'me-auto': env.isSmall }">
+                    <t t-esc="scale.product.name"/>
+                </h4>
+                <t t-if="!env.isSmall">
+                    <button type="button" class="btn-close" aria-label="Close" tabindex="-1" t-on-click="props.close"/>
+                </t>
+            </t>
+
+            <!-- Disconnection banner -->
+            <div t-if="scale.isDisconnected" class="alert alert-warning mb-3 d-flex align-items-center justify-content-center gap-2 py-2">
+                <i class="fa fa-exclamation-triangle"/>
+                <span class="fs-5">Balance déconnectée - Saisie manuelle</span>
+            </div>
+
+            <div class="d-flex flex-column" t-att-class="manualState.activeNumpadField ? 'scale-form-with-numpad' : ''">
+                <!-- Gross Weight -->
+                <div class="d-flex gap-2 align-items-center mb-2">
+                    <div class="w-60 fs-3 me-2">Poids Brut:</div>
+                    <!-- Auto mode: text display -->
+                    <div t-if="!scale.isWeightOverridden" class="gross-weight fs-3 px-5 text-end form-control-plaintext" t-esc="scale.grossWeightString"/>
+                    <!-- Override mode: input -->
+                    <t t-if="scale.isWeightOverridden">
+                        <div class="d-flex align-items-center flex-grow-1">
+                            <input type="number"
+                                   step="0.001"
+                                   min="0"
+                                   class="form-control form-control-lg text-end fs-3"
+                                   t-att-value="manualState.manualWeightInput"
+                                   t-on-input="onManualWeightChange"
+                                   placeholder="0.000"/>
+                            <span class="ms-2 fs-3" t-esc="scale._safeUnitOfMeasure"/>
+                        </div>
+                    </t>
+                    <!-- Calculator button -->
+                    <button class="btn btn-lg ms-2"
+                            t-att-class="manualState.activeNumpadField === 'weight' ? 'btn-primary' : 'btn-outline-secondary'"
+                            t-on-click="() => this.toggleNumpad('weight')"
+                            title="Numpad poids">
+                        <i class="fa fa-calculator"/>
+                    </button>
+                </div>
+
+                <!-- Tare -->
+                <div class="d-flex gap-2 align-items-center mb-2">
+                    <button class="btn btn-primary fs-3"
+                            t-att-disabled="scale.tareRequested or scale.isDisconnected"
+                            t-on-click="() => scale.requestTare()">
+                        <i t-if="scale.tareRequested" class="fa fa-circle-o-notch fa-spin"/>
+                        <t t-else="">Tare</t>
+                    </button>
+                    <!-- Auto/Manual indicator -->
+                    <span t-if="scale.tare > 0 and !scale.isTareManual" class="fs-4 fst-italic text-muted">Automatique</span>
+                    <span t-if="scale.tare > 0 and scale.isTareManual" class="fs-4 fst-italic text-warning">Manuel</span>
+                    <span class="fs-3 ms-auto">-</span>
+                    <!-- Tare input -->
+                    <div class="d-flex flex-row align-items-center">
+                        <t t-if="manualState.activeNumpadField === 'tare'">
+                            <input type="number"
+                                   step="0.001"
+                                   min="0"
+                                   class="form-control me-2"
+                                   style="width: 100px;"
+                                   t-att-value="manualState.tareInput"
+                                   t-on-input="onTareInputChange"
+                                   placeholder="0.000"/>
+                        </t>
+                        <t t-else="">
+                            <input type="number"
+                                   class="form-control me-2"
+                                   t-att-readonly="scale.tareRequested"
+                                   t-model.number="this.scale.tare"
+                                   t-on-input="onTareInputChange"/>
+                        </t>
+                        <span class="text-end fs-3" t-esc="scale._safeUnitOfMeasure"/>
+                    </div>
+                    <!-- Tare calculator button -->
+                    <button class="btn btn-lg ms-2"
+                            t-att-class="manualState.activeNumpadField === 'tare' ? 'btn-primary' : 'btn-outline-secondary'"
+                            t-on-click="() => this.toggleNumpad('tare')"
+                            title="Numpad tare">
+                        <i class="fa fa-calculator"/>
+                    </button>
+                </div>
+
+                <!-- Net Weight -->
+                <div class="d-flex gap-2 align-items-center mb-2 p-2 bg-light rounded">
+                    <div class="w-60 fs-3 me-2 fw-bold">Poids Net:</div>
+                    <div class="text-end fs-2 px-5 fw-bold text-primary" t-esc="scale.effectiveNetWeightString"/>
+                </div>
+
+                <!-- Price -->
+                <div class="d-flex px-5 flex-row gap-2 m-2 align-items-center">
+                    <div class="product-price w-50 fs-2 text-center" t-esc="scale.unitPriceString"/>
+                    <div class="computed-price fd-flex flex-grow-1 p-3 rounded text-center text-bg-info bg-opacity-25 text-info fs-2 fw-bold" t-esc="scale.totalPriceString"/>
+                </div>
+
+                <!-- Numpad -->
+                <div t-if="manualState.activeNumpadField"
+                     class="scale-numpad-container d-flex flex-column align-items-center justify-content-center">
+                    <div class="text-muted mb-2 fs-5">
+                        Saisie: <t t-if="manualState.activeNumpadField === 'weight'">Poids Brut</t><t t-else="">Tare</t>
+                    </div>
+                    <Numpad buttons="getSimpleNumpadButtons()" onClick.bind="onNumpadClick" class="'numpad-scale'"/>
+                </div>
+            </div>
+
+            <t t-set-slot="footer">
+                <button class="btn btn-secondary mx-2 w-100" t-if="scale.isManualMeasurement and !scale.isWeightOverridden" t-att-disabled="scale.loading" t-on-click="() => scale.readWeight()">
+                    <i t-if="scale.loading and !scale.tareRequested" class="fa fa-spinner fa-spin"/>
+                    <t t-else="">Get Weight</t>
+                </button>
+                <button class="buy-product btn btn-lg btn-primary d-flex align-items-center justify-content-center mx-2 mb-2 cursor-pointer w-100" t-on-click="confirm" t-att-disabled="!isOrderValid">
+                    Order
+                    <i class="fa fa-angle-double-right ms-2"/>
+                </button>
+            </t>
+        </Dialog>
+    </t>
+</templates>
